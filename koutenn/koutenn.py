@@ -101,26 +101,26 @@ class Player(Objects):
                 if checkNotCrash(obstacle,self.positionX-step,self.positionY):
                     self.positionX-=60
                     global obstacle 
-                    obstacle = Objects(self.positionX,self.positionY,"i2","i2.gif")
+                    obstacle = Objects(self.positionX,self.positionY,"i2","img/i2.gif")
                     obstacle.image.draw(win)
 
                 elif checkNotCrash(obstacle,self.positionX+step,self.positionY):
                     self.positionX+=60
                     global obstacle 
-                    obstacle = Objects(self.positionX,self.positionY,"i2","i2.gif")
+                    obstacle = Objects(self.positionX,self.positionY,"i2","img/i2.gif")
                     obstacle.image.draw(win)          
 
                 elif checkNotCrash(obstacle,self.positionX, self.positionY-step):
                     self.positionY-=60
                     global obstacle 
-                    obstacle = Objects(self.positionX,self.positionY,"i2","i2.gif")
+                    obstacle = Objects(self.positionX,self.positionY,"i2","img/i2.gif")
                     obstacle.image.draw(win)
 
                 elif checkNotCrash(obstacle,self.positionX, self.positionY+step):
 
                     self.positionY+=60
                     global obstacle 
-                    obstacle =  Objects(self.positionX,self.positionY,"i2","i2.gif")
+                    obstacle =  Objects(self.positionX,self.positionY,"i2","img/i2.gif")
                     obstacle.image.draw(win)
 
                 else:
@@ -418,7 +418,7 @@ def preset():
     iris = Iris(-50,-50, "iris", "i1.gif")
     iris.image.draw(win)
     global obstacle 
-    obstacle =  Objects(random.randint(-490,490),random.randint(-490,490),"i2","i2.gif")
+    obstacle =  Objects(random.randint(-490,490),random.randint(-490,490),"i2","img/i2.gif")
     obstacle.image.draw(win)
 
 
