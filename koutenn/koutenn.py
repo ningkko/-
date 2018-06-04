@@ -4,6 +4,7 @@ import tkinter
 from tkinter import messagebox
 import random
 
+
 def main():
     # Create the scene
     global frame 
@@ -96,7 +97,7 @@ class Player(Objects):
 
         if self.name == "ning":   
             #=====================================================================
-            # When using Ning, player can move faster for 100 frames. 
+            # When using Ning, player can move faster for 200 frames. 
             # After one use of technique the player hsa to wait for 300 frames
             # to use the tech again.
             #=====================================================================
@@ -104,7 +105,7 @@ class Player(Objects):
                 frame = 0
                 self.step = 18
 
-            if frame > 100:
+            if frame > 200:
                 self.step = 10
 
         elif self.name == "ewon":
@@ -265,20 +266,53 @@ class Player(Objects):
 
         self.image.undraw()
         wrap()
-       
+
+        # check if moving will crash with obstacles
+        safeL = True
+        safeR = True
+        safeU = True
+        safeD = True
+
         for positions in obstaclePositions:
-        
+            # moving left
             if checkNotCrash(positions,self.positionX-self.step,self.positionY):
-                moveLeft()
-       
+                pass
+            else:
+                safeL = False
+
+            # moving right
             if checkNotCrash(positions,self.positionX+self.step,self.positionY):
-                moveRight()
-       
+                pass
+            else:
+                safeR = False
+
+            # moving down
             if checkNotCrash(positions,self.positionX, self.positionY-self.step):
-                moveDown()
-       
+                pass
+            else:
+                safeD = False
+
+            # moving up
             if checkNotCrash(positions,self.positionX, self.positionY+self.step):
-                moveUp()
+                pass
+            else: 
+                safeU = False
+
+        #-----------check safe status and move---------------------
+        if safeL:
+            moveLeft()
+
+        if safeR:
+            moveRight()
+
+        if safeU:
+            moveUp()
+
+        if safeD:
+            moveDown()
+
+        else:
+            pass
 
         self.image = Image(Point(self.positionX,self.positionY),self.imageID)
         self.image.draw(win)
