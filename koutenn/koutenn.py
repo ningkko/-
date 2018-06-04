@@ -7,11 +7,12 @@ import random
 
 def main():
     # Create the scene
+    # fram for monitoring the time
     global frame 
     frame= 0
     global gameState
-    global pause
     gamestate = 0
+    global pause
     pause = False
 
     creatwin()    
@@ -26,7 +27,7 @@ def main():
             k = win.checkKey()
 
             if gameState == 1:
-
+                pause = False
                 iris.moveIris()
                 player.playerMove()  
                 player.checkPlayerAttributes()
@@ -34,16 +35,13 @@ def main():
                     break
 
             elif gameState == 2 and pause == False:
-
                 pause = True
                 pausePanel()
 
             elif gameState == 4:
-
                 selectPlayer()
 
             elif gameState == 0:
-
                 tkinter.messagebox.showinfo("\u6349\u4f4f\u8001\u96e8\u5929","\u543c\uff0c\u70b9\u51fb\u7a97\u53e3\u9000\u51fa")
                 break
 
@@ -103,10 +101,10 @@ class Player(Objects):
             #=====================================================================
             if frame > 400 and k == "j":
                 frame = 0
-                self.step = 18
+                self.step = 20
 
             if frame > 200:
-                self.step = 10
+                self.step = 12
 
         elif self.name == "ewon":
             # ================================================================
@@ -122,25 +120,25 @@ class Player(Objects):
 
                 for positions in obstaclePositions:
                     # moving left
-                    if checkNotCrash(positions,self.positionX-self.step,self.positionY):
+                    if checkNotCrash(positions,self.positionX-80,self.positionY) or (self.positionX-80<=-580):
                         pass
                     else:
                         safeL = False
 
                     # moving right
-                    if checkNotCrash(positions,self.positionX+self.step,self.positionY):
+                    if checkNotCrash(positions,self.positionX+80,self.positionY) or (self.positionX+80>=580):
                         pass
                     else:
                         safeR = False
 
                     # moving down
-                    if checkNotCrash(positions,self.positionX, self.positionY-self.step):
+                    if checkNotCrash(positions,self.positionX, self.positionY-80) or (self.positionY-80<=-580):
                         pass
                     else:
                         safeD = False
 
                     # moving up
-                    if checkNotCrash(positions,self.positionX, self.positionY+self.step):
+                    if checkNotCrash(positions,self.positionX, self.positionY+80) or (self.positionX-80>=580):
                         pass
                     else: 
                         safeU = False
@@ -148,22 +146,22 @@ class Player(Objects):
                 # set obstacle according to safty status
                 if safeL:
                     obstaclePositions.append([self.positionX,self.positionY])
-                    drawObject(self.positionX,self.positionY,"img/i2.gif")
+                    drawObject(self.positionX,self.positionY,"img/noodle.gif")
                     self.positionX-=80 
 
                 elif safeR:
                     obstaclePositions.append([self.positionX,self.positionY])
-                    drawObject(self.positionX,self.positionY,"img/i2.gif")
+                    drawObject(self.positionX,self.positionY,"img/noodle.gif")
                     self.positionX+=80 
 
                 elif safeU:
                     obstaclePositions.append([self.positionX,self.positionY])
-                    drawObject(self.positionX,self.positionY,"img/i2.gif")
+                    drawObject(self.positionX,self.positionY,"img/noodle.gif")
                     self.positionY+=80 
 
                 elif safeD:
                     obstaclePositions.append([self.positionX,self.positionY])
-                    drawObject(self.positionX,self.positionY,"img/i2.gif")
+                    drawObject(self.positionX,self.positionY,"img/noodle.gif")
                     self.positionY-=80 
 
                 else:
@@ -182,7 +180,7 @@ class Player(Objects):
 
             if frame > 100:
                 iris.affliateState = False
-                self.step = 10
+                self.step = 12
 
         elif self.name == "nox":
             # ==========================================================================
@@ -200,7 +198,7 @@ class Player(Objects):
 
             if frame > 100:
                 iris.irirsStep = 5
-                self.step =10
+                self.step =12
 
         elif self.name == "molly":
             # ===========================================================================
@@ -210,11 +208,11 @@ class Player(Objects):
             # ===========================================================================
             if frame>500 and k == "j":
                 frame = 0
-                iris.irirsStep = 2.5
+                iris.irirsStep = 2
                 self.step = 0
            
-            if frame>100: 
-                self.step = 10
+            if frame>70: 
+                self.step = 14
            
             if frame>200:
                 iris.irirsStep = 5
@@ -411,7 +409,7 @@ class Iris(Objects):
 
             # change to the selecting state.
             gameState = 2
-    
+
     def checkPlayer(self):
        
         # iris has 2 states, one is to avoid the player, the other one is to touch the player 
@@ -547,7 +545,7 @@ class Iris(Objects):
                 self.direction = "none"
 
 def pausePanel():
-
+    print("pause entered")
     global pause
     global gameState
 
@@ -592,7 +590,7 @@ def pausePanel():
     b1 = tkinter.Button(box2, text = "\u6765", command = newGame)
     b2 = tkinter.Button(box2, text = "选择其他角色", command = newPlayer)
     b3 = tkinter.Button(box2, text = "\u4e0d\u4e86", command = fin)
-  
+    
     b1.pack()        
     b2.pack()
     b3.pack()
@@ -782,27 +780,34 @@ def initialize(characterID,characterImage):
     '''sets up the window.
     '''
     global obstaclePositions
+    obstaclePositions = []
     player.name = characterID
     player.imageID = characterImage
   
     player.image.draw(win)
     
     iris.image.draw(win)
-    x1,y1 = random.randint(-500,500),random.randint(-500,500)
-    obstaclePositions = [[x1,y1]]
-    drawObject(x1,y1,"img/i2.gif")
+    for i in range(0,15):
+        x1,y1 = random.randint(-500,500),random.randint(-500,500)
+
+        safe = True
+
+        for positions in obstaclePositions:
+            # moving left
+            if not checkNotCrash(positions,x1,y1):
+                safe = False
+        if safe == True:
+            obstaclePositions.append([x1,y1])
+            drawObject(x1,y1,"img/noodle.gif")
 
 def objectGenerator():
-   
+
     global player
     player = Player(100,100,"ning","img/ning2.gif")
    
     global iris
     iris = Iris(-50,-50, "iris", "img/i1.gif")
-  
-    global obstaclePositions
-    x1,y1 = random.randint(-500,500),random.randint(-500,500)
-    #Check if irirs tends to touch the player or walk away from the player
+
 
 
 if __name__ == '__main__':
