@@ -96,9 +96,9 @@ class Player(Objects):
 
         global frame
 
-        if self.name == "ning":   
+        if self.name == "p1":   
             #=====================================================================
-            # When using Ning, player can move faster for 200 frames. 
+            # When using p1, player can move faster for 200 frames. 
             # After one use of technique the player hsa to wait for 300 frames
             # to use the tech again.
             #=====================================================================
@@ -109,13 +109,13 @@ class Player(Objects):
             if frame > 200:
                 self.step = 12
 
-        elif self.name == "ewon":
+        elif self.name == "p2":
             # ================================================================
-            # regardless of frames, when using ewon, player can set obstacles.
+            # regardless of frames, when using p2, player can set obstacles.
             # ================================================================
             if k == "j":
-                # after dropping the obstacle ewon will move out of the obstacle range
-                # first check if the default move will move ewon into an obstacle area.
+                # after dropping the obstacle p2 will move out of the obstacle range
+                # first check if the default move will move p2 into an obstacle area.
                 safeL = True
                 safeR = True
                 safeU = True
@@ -141,22 +141,22 @@ class Player(Objects):
                 # set obstacle according to safty status
                 if safeL:
                     obstaclePositions.append([self.positionX,self.positionY])
-                    drawObject(self.positionX,self.positionY,"img/noodle.gif")
+                    drawObject(self.positionX,self.positionY,"img/lsf.gif")
                     self.positionX-=80 
 
                 elif safeR:
                     obstaclePositions.append([self.positionX,self.positionY])
-                    drawObject(self.positionX,self.positionY,"img/noodle.gif")
+                    drawObject(self.positionX,self.positionY,"img/lsf.gif")
                     self.positionX+=80 
 
                 elif safeU:
                     obstaclePositions.append([self.positionX,self.positionY])
-                    drawObject(self.positionX,self.positionY,"img/noodle.gif")
+                    drawObject(self.positionX,self.positionY,"img/lsf.gif")
                     self.positionY+=80 
 
                 elif safeD:
                     obstaclePositions.append([self.positionX,self.positionY])
-                    drawObject(self.positionX,self.positionY,"img/noodle.gif")
+                    drawObject(self.positionX,self.positionY,"img/lsf.gif")
                     self.positionY-=80 
 
                 else:
@@ -170,9 +170,9 @@ class Player(Objects):
                         if win.getMouse():
                             pausePanel()
 
-        elif self.name == "maomao":
+        elif self.name == "p3":
             # ============================================================================
-            # when using maomao, player can stand and attract iris.
+            # when using p3, player can stand and attract iris.
             # after 100 frames the tech will disappear and another 300 frames are needed
             # for the next use of tech.
             # =============================================================================
@@ -187,12 +187,11 @@ class Player(Objects):
                 iris.irisStep = 5
                 self.step = 12
 
-        elif self.name == "nox":
+        elif self.name == "p4":
             # ==========================================================================
-            # nox has 50% chance to make either herself or iris sleep for 100 frames. 
+            # p4 has 50% chance to make either herself or iris sleep for 100 frames. 
             # another 300 frames are needed for using the tech again.
             # ==========================================================================
-
             if frame>300 and k == "j":
                 chance = random.randint(0,1)
 
@@ -207,9 +206,9 @@ class Player(Objects):
                 iris.irirsStep = 5
                 self.step =12
 
-        elif self.name == "molly":
+        elif self.name == "p5":
             # ===========================================================================
-            # when using molly, player can decrease iris's speed to half of the original after
+            # when using p5, player can decrease iris's speed to half of the original after
             # stand for 100 frames. iris will remain the slower speed for 100 frames and then
             # another 300 frames are needed for reusing the tech.
             # ===========================================================================
@@ -223,6 +222,63 @@ class Player(Objects):
            
             if frame>200:
                 iris.irirsStep = 5
+
+        elif self.name == "p6":
+            # ===========================================================================
+            # when using p6, player can change iris positions pressing j or k
+            # ===========================================================================
+            if frame>100:
+                if k == "j":
+                    frame = 0
+                    iris.positionX = -iris.positionX
+                elif k == "k":
+                    frame = 0
+                    iris.positionY = -iris.positionY
+
+        elif self.name == "p7":
+            # ===========================================================================
+            # when using p7, player can change self positions pressing j or k
+            # ===========================================================================
+            if frame>100:
+
+                safe = True
+                if k == "j":
+                
+                    for positions in obstaclePositions:
+                        if not checkNotCrash(positions,-self.positionX,self.positionY):
+                            safe = False
+                    
+                    if safe == True:
+                        frame = 0
+                        self.positionX = -self.positionX
+                
+                elif k == "k":
+
+                    for positions in obstaclePositions:
+                        if not checkNotCrash(positions,self.positionX,-self.positionY):
+                            safe = False
+                    if safe == True: 
+                        frame = 0
+                        self.positionY = -self.positionY
+
+        elif self.name == "p8":
+            # ===========================================================================
+            # when using p9, after standing for 50 frame,player can move to the place 
+            # near where iris was
+            # ===========================================================================
+            if frame>200 and k == "j":
+                targetx = iris.positionX
+                targety = iris.positionY
+                self.step = 0
+                iris.irisStep = 8
+
+            if frame>250:
+                frame = 0
+                self.positionX = random.randint(0,100)*targetx/100
+                self.positionY = random.randint(0,100)*targety/100
+                self.step = 12
+                iris.step = 5
+
 
     def playerMove(self):
 
@@ -280,27 +336,19 @@ class Player(Objects):
 
         for positions in obstaclePositions:
             # moving left
-            if checkNotCrash(positions,self.positionX-self.step,self.positionY):
-                pass
-            else:
+            if not checkNotCrash(positions,self.positionX-self.step,self.positionY):
                 safeL = False
 
             # moving right
-            if checkNotCrash(positions,self.positionX+self.step,self.positionY):
-                pass
-            else:
+            if not checkNotCrash(positions,self.positionX+self.step,self.positionY):
                 safeR = False
 
             # moving down
-            if checkNotCrash(positions,self.positionX, self.positionY-self.step):
-                pass
-            else:
+            if not checkNotCrash(positions,self.positionX, self.positionY-self.step):
                 safeD = False
 
             # moving up
-            if checkNotCrash(positions,self.positionX, self.positionY+self.step):
-                pass
-            else: 
+            if not checkNotCrash(positions,self.positionX, self.positionY+self.step):
                 safeU = False
 
         #-----------check safe status and move---------------------
@@ -315,9 +363,6 @@ class Player(Objects):
 
         if safeD:
             moveDown()
-
-        else:
-            pass
 
         self.image = Image(Point(self.positionX,self.positionY),self.imageID)
         self.image.draw(win)
@@ -706,8 +751,15 @@ def creatwin():
     win.setBackground( 'white' )
     win.setCoords( -600, -600, 600, 600 )
 
+    title = Text(Point(0,0), "抓 住 老 雨 天")
+    title.setSize(36)
+    title.setTextColor("black")
+    title.setStyle("bold")
+    title.draw(win)
+
 def selectPlayer():
     # initialize
+    resetScreen()
     character = ""
     global gameState
     selected = False
@@ -718,11 +770,14 @@ def selectPlayer():
     title.setStyle("bold")
     title.draw(win)
     # draw characters
-    drawObject(-400,0,"img/ning2.gif")
-    drawObject(-200,0,"img/ewon.gif")
-    drawObject(0,0,"img/maomao.gif")
-    drawObject(200,0,"img/nox.gif")
-    drawObject(400,0,"img/molly.gif")    
+    drawObject(-500,0,"img/p1.gif")
+    drawObject(-350,0,"img/p2.gif")
+    drawObject(-200,0,"img/p3.gif")
+    drawObject(-50,0,"img/p4.gif")
+    drawObject(100,0,"img/p5.gif")  
+    drawObject(250,0,"img/p6.gif")  
+    drawObject(400,0,"img/p7.gif")  
+    drawObject(550,0,"img/p8.gif")  
     # draw button
     button = Rectangle(Point(-80,-180),Point(80,-120))
     button.setWidth(3)
@@ -741,36 +796,54 @@ def selectPlayer():
         xp,yp = mouse.getX(),mouse.getY()
         global characterID
         global characterImage
-        if -460<=xp<=-340 and -60<=yp<=60:
+        if -550<=xp<=-450 and -60<=yp<=60:
             character = "老宁"    
-            characterID = "ning"
-            characterImage = "img/ning2.gif"
+            characterID = "p1"
+            characterImage = "img/p1.gif"
             tkinter.messagebox.showinfo("老宁","飞一般的感觉")
 
-        elif -260<=xp<=-140 and -60<=yp<=60:
+        elif -400<=xp<-300 and -60<=yp<=60:
 
             character = "小鹅"
-            characterID = "ewon"
-            characterImage = "img/ewon.gif"    
+            characterID = "p2"
+            characterImage = "img/p2.gif"    
             tkinter.messagebox.showinfo("小鹅","使用食物诱惑")
 
-        elif -60<=xp<=60 and -60<=yp<=60:
+        elif -250<=xp<=-150 and -60<=yp<=60:
             character = "毛毛"
-            characterID = "maomao"
-            characterImage = "img/maomao.gif"
+            characterID = "p3"
+            characterImage = "img/p3.gif"
             tkinter.messagebox.showinfo("毛毛","会让老雨天忍不住揍一顿")
 
-        elif 140<=xp<=260 and -60<=yp<=60:
-            character = "nox"
-            characterID = "nox"
-            characterImage = "img/nox.gif"
-            tkinter.messagebox.showinfo("nox","百分之五十几率让自己或对方陷入沉睡")        
+        elif -100<=xp<=0 and -60<=yp<=60:
+            character = "p4"
+            characterID = "p4"
+            characterImage = "img/p4.gif"
+            tkinter.messagebox.showinfo("p4","百分之五十几率让自己或对方陷入沉睡")        
         
-        elif 340<=xp<=460 and -60<=yp<=60:
+        elif 50<=xp<=150 and -60<=yp<=60:
             character = "茉莉"
-            characterID = "molly"
-            characterImage = "img/molly.gif"
+            characterID = "p5"
+            characterImage = "img/p5.gif"
             tkinter.messagebox.showinfo("茉莉","笑声威慑")
+
+        elif 200<=xp<=300 and -60<=yp<=60:
+            character = "Elaine"
+            characterID = "p6"
+            characterImage = "img/p6.gif"
+            tkinter.messagebox.showinfo("Elaine","可爱粉红小猪猪")        
+
+        elif 350<=xp<=450 and -60<=yp<=60:
+            character = "老雷"
+            characterID = "p7"
+            characterImage = "img/p7.gif"
+            tkinter.messagebox.showinfo("老雷","瞬身战士")
+
+        elif 500<=xp<=600 and -60<=yp<=60:
+            character = "阿比"
+            characterID = "p8"
+            characterImage = "img/p8.gif"
+            tkinter.messagebox.showinfo("阿比","冷静观察者")
 
         elif -80<=xp<=80 and -260<=yp<=-100 and character:
             tkinter.messagebox.showinfo("选中角色","你已选中"+character)
@@ -812,7 +885,7 @@ def initialize(characterID,characterImage):
 
         if safe == True:
             obstaclePositions.append([x1,y1])
-            drawObject(x1,y1,"img/noodle.gif")
+            drawObject(x1,y1,"img/obstacle.gif")
 
 def objectGenerator():
 
