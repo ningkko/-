@@ -31,6 +31,7 @@ def main():
                 iris.moveIris()
                 player.playerMove()  
                 player.checkPlayerAttributes()
+
                 if k == 'period':
                     break
 
@@ -60,7 +61,9 @@ class Objects:
         self.positionX = px
         self.positionY = py
         self.imageID = image
-        self.image = Image( Point(px, py), image)
+        if image!="":
+            self.image = Image( Point(px, py), image)
+        else: self.image=""
         self.name = name
 
     def checkDistance (self,position):
@@ -120,27 +123,19 @@ class Player(Objects):
 
                 for positions in obstaclePositions:
                     # moving left
-                    if checkNotCrash(positions,self.positionX-80,self.positionY) or (self.positionX-80<=-580):
-                        pass
-                    else:
+                    if not checkNotCrash(positions,self.positionX-80,self.positionY) or (self.positionX-80<=-580):
                         safeL = False
 
                     # moving right
-                    if checkNotCrash(positions,self.positionX+80,self.positionY) or (self.positionX+80>=580):
-                        pass
-                    else:
+                    if not checkNotCrash(positions,self.positionX+80,self.positionY) or (self.positionX+80>=580):
                         safeR = False
 
                     # moving down
-                    if checkNotCrash(positions,self.positionX, self.positionY-80) or (self.positionY-80<=-580):
-                        pass
-                    else:
+                    if not checkNotCrash(positions,self.positionX, self.positionY-80) or (self.positionY-80<=-580):
                         safeD = False
 
                     # moving up
-                    if checkNotCrash(positions,self.positionX, self.positionY+80) or (self.positionX-80>=580):
-                        pass
-                    else: 
+                    if not checkNotCrash(positions,self.positionX, self.positionY+80) or (self.positionX-80>=580):
                         safeU = False
 
                 # set obstacle according to safty status
@@ -167,6 +162,14 @@ class Player(Objects):
                 else:
                     pass
 
+                crash = False
+                for positions in obstaclePositions:
+                    if not checkNotCrash(positions,self.positionX,self.positionY):
+                        tkinter.messagebox.showinfo("你挂了","你在尝试困住小雨天的时候把自己困住了")
+                        tkinter.messagebox.showinfo("你挂了","点击任意位置退出")
+                        if win.getMouse():
+                            pausePanel()
+
         elif self.name == "maomao":
             # ============================================================================
             # when using maomao, player can stand and attract iris.
@@ -177,9 +180,11 @@ class Player(Objects):
                     frame = 0
                     iris.affliateState = True
                     self.step = 0
+                    iris.irirsStep = 3
 
             if frame > 100:
                 iris.affliateState = False
+                iris.irisStep = 5
                 self.step = 12
 
         elif self.name == "nox":
@@ -187,13 +192,15 @@ class Player(Objects):
             # nox has 50% chance to make either herself or iris sleep for 100 frames. 
             # another 300 frames are needed for using the tech again.
             # ==========================================================================
-            chance = random.randint(0,1)
 
             if frame>300 and k == "j":
+                chance = random.randint(0,1)
+
                 if chance == 0:
                     frame = 0
                     iris.irirsStep = 0
                 elif chance == 1:
+                    frame = 0
                     self.step = 0
 
             if frame > 100:
@@ -381,31 +388,32 @@ class Iris(Objects):
             #End game
             #
 
-            # generate a new position to avoid catching iris at the beginning
-            def generateValidNewPositions():
-                
-                global newix
-                global newiy
-                global newpx
-                global newpy
-                global notCrash
-                notCrash = True
-
-                # first create new random positions
-                newix,newiy = random.randint(-500,500),random.randint(-500,500)
-                newpx,newpy = random.randint(-500,500),random.randint(-500,500)   
-                
-                #check if it's in the catching area of obstacles
-                for positions in obstaclePositions:
-                    if not checkNotCrash(positions,newix,newiy) or not checkNotCrash(positions,newpx,newpy):
-                        notCrash = False
-
-            # generate valid new positions
-            while notCrash == False:
-                generateValidNewPositions()
             # move iris and player to new positions
-            iris.positionX, iris.positionY = newix,newiy
-            player.positionX, player.positionY = newpx,newpy
+            # generate random player and iris positions
+            x1,y1 = random.randint(-500,0),random.randint(-500,0)
+            x2,y2 = random.randint(0,500),random.randint(0,500)
+            xChance = random.randint(0,1)
+            if xChance == 0:
+                px=x1
+                ix=x2
+            else:
+                px=x2
+                ix=x1
+            yChance = random.randint(0,1)
+            if yChance == 0:
+                py=y1
+                iy=y2
+            else:
+                py=y2
+                iy=y1       
+
+            # add to obstacle positions for avoiding creating obstacles on players 
+            global characterPositions
+            characterPositions = []
+            characterPositions.append([px,py])
+            characterPositions.append([ix,iy])
+            iris.positionX, iris.positionY = ix,iy
+            player.positionX, player.positionY = px,py
 
             # change to the selecting state.
             gameState = 2
@@ -545,16 +553,22 @@ class Iris(Objects):
                 self.direction = "none"
 
 def pausePanel():
-    print("pause entered")
+
     global pause
     global gameState
 
-  
     def newGame():
         
         global pause
         global gameState
         # go to game 
+        iris.image.undraw()
+        player.image.undraw()
+        global obstaclePositions
+        obstaclePositions = []
+        global characterPositions
+        resetScreen()
+        initialize(characterID,characterImage)
         gameState = 1
         pause == False
        
@@ -595,13 +609,11 @@ def pausePanel():
     b2.pack()
     b3.pack()
 
-def clearObstacles():
-   
-    global obstaclePositions
-    obstaclePositions = []
-
 def resetScreen():
     
+    iris.irirsStep= 5
+    iris.affliateState=False
+    player.step=10
     cover = Rectangle(Point(-650,-650),Point(650,650))
     cover.setFill("white")
     cover.draw(win)
@@ -609,7 +621,7 @@ def resetScreen():
 def checkNotCrash(position,selfPositionX,selfPositionY):
 
     #  if crash into obstacles, return false.
-    if (-60 < (position[0] - selfPositionX ) < 60) and (-60 < (position[1]- selfPositionY ) < 60):
+    if (-80 < (position[0] - selfPositionX ) < 80) and (-80 < (position[1]- selfPositionY ) < 80):
         return False
     
     else: return True
@@ -727,7 +739,8 @@ def selectPlayer():
 
         mouse = win.getMouse( )
         xp,yp = mouse.getX(),mouse.getY()
-
+        global characterID
+        global characterImage
         if -460<=xp<=-340 and -60<=yp<=60:
             character = "老宁"    
             characterID = "ning"
@@ -763,9 +776,7 @@ def selectPlayer():
             tkinter.messagebox.showinfo("选中角色","你已选中"+character)
             selected = True
             resetScreen()
-            print(characterImage)
             initialize(characterID,characterImage)
-            print(characterImage)
             tkinter.messagebox.showinfo("选择角色","点击屏幕开始游戏。")
             if win.getMouse():
                 gameState = 1
@@ -783,7 +794,7 @@ def initialize(characterID,characterImage):
     obstaclePositions = []
     player.name = characterID
     player.imageID = characterImage
-  
+    player.image = Image( Point(player.positionX, player.positionY), characterImage)
     player.image.draw(win)
     
     iris.image.draw(win)
@@ -792,22 +803,52 @@ def initialize(characterID,characterImage):
 
         safe = True
 
-        for positions in obstaclePositions:
-            # moving left
+        for positions in characterPositions:
             if not checkNotCrash(positions,x1,y1):
                 safe = False
+        for positions in obstaclePositions:
+            if not checkNotCrash(positions,x1,y1):
+                safe = False
+
         if safe == True:
             obstaclePositions.append([x1,y1])
             drawObject(x1,y1,"img/noodle.gif")
 
 def objectGenerator():
 
+    # generate random player and iris positions
+    x1,y1 = random.randint(-500,0),random.randint(-500,0)
+    x2,y2 = random.randint(0,500),random.randint(0,500)
+    xChance = random.randint(0,1)
+    if xChance == 0:
+        px=x1
+        ix=x2
+    else:
+        px=x2
+        ix=x1
+    yChance = random.randint(0,1)
+    if yChance == 0:
+        py=y1
+        iy=y2
+    else:
+        py=y2
+        iy=y1       
+
+    # add to obstacle positions for avoiding creating obstacles on players 
+    global characterPositions
+    characterPositions = []
+    characterPositions.append([px,py])
+    characterPositions.append([ix,iy])
+
+    # create player and iris
     global player
-    player = Player(100,100,"ning","img/ning2.gif")
+    player = Player(px,py,"","")
    
     global iris
-    iris = Iris(-50,-50, "iris", "img/i1.gif")
+    iris = Iris(ix,iy, "iris", "img/i1.gif")
 
+    global obstaclePositions
+    obstaclePositions=[]
 
 
 if __name__ == '__main__':
