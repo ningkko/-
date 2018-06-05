@@ -14,7 +14,7 @@ A game for my CutterZ citizens.\
 nene
 
 ## Other explanations／游戏说明
-### 太多字了不想翻译了自己看吧
+#### 太多字了不想翻译了自己看吧
 Koutenn is running! Catch her!\
 There are 8 of us you can select to catch Koutenn.
 1. When you're using Ning, you can move faster after pressing j. After using the technique the player has to wait for 300 frames for the next use.
