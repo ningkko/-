@@ -6,7 +6,7 @@ import random
 
 def main():
     # Create the scene
-    # fram2 for monitoring the time
+    # frame for monitoring the time
     global frame 
     frame = 0
     global gameState
