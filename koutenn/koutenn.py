@@ -1,7 +1,6 @@
 from PIL import Image
 from graphics import*
-import tkinter
-from tkinter import messagebox
+from tkinter import Button,messagebox,Entry,Tk
 import random
 
 
@@ -14,6 +13,10 @@ def main():
     gamestate = 0
     global pause
     pause = False
+    global bought
+    bought = False
+    global password 
+    password = "nene"
 
     creatwin()    
     setDirectionKeys()
@@ -26,14 +29,14 @@ def main():
             global k
             k = win.checkKey()
 
-            if gameState == 1:
+            if k == 'period':
+                break
+
+            elif gameState == 1:
                 pause = False
                 iris.moveIris()
                 player.playerMove()  
                 player.checkPlayerAttributes()
-
-                if k == 'period':
-                    break
 
             elif gameState == 2 and pause == False:
                 pause = True
@@ -43,7 +46,7 @@ def main():
                 selectPlayer()
 
             elif gameState == 0:
-                tkinter.messagebox.showinfo("\u6349\u4f4f\u8001\u96e8\u5929","\u543c\uff0c\u70b9\u51fb\u7a97\u53e3\u9000\u51fa")
+                messagebox.showinfo("\u6349\u4f4f\u8001\u96e8\u5929","\u543c\uff0c\u70b9\u51fb\u7a97\u53e3\u9000\u51fa")
                 break
 
             frame+=1
@@ -165,8 +168,8 @@ class Player(Objects):
                 crash = False
                 for positions in obstaclePositions:
                     if not checkNotCrash(positions,self.positionX,self.positionY):
-                        tkinter.messagebox.showinfo("你挂了","你在尝试困住小雨天的时候把自己困住了")
-                        tkinter.messagebox.showinfo("你挂了","点击任意位置退出")
+                        messagebox.showinfo("你挂了","你在尝试困住小雨天的时候把自己困住了")
+                        messagebox.showinfo("你挂了","点击任意位置退出")
                         if win.getMouse():
                             pausePanel()
 
@@ -266,18 +269,21 @@ class Player(Objects):
             # when using p9, after standing for 50 frame,player can move to the place 
             # near where iris was
             # ===========================================================================
+            transitiionState = False
             if frame>200 and k == "j":
+                transitiionState = True
                 targetx = iris.positionX
                 targety = iris.positionY
                 self.step = 0
                 iris.irisStep = 8
 
-            if frame>250:
+            if frame>250 and transitiionState == True:
                 frame = 0
                 self.positionX = random.randint(0,100)*targetx/100
                 self.positionY = random.randint(0,100)*targety/100
                 self.step = 12
                 iris.step = 5
+                transitiionState = False
 
 
     def playerMove(self):
@@ -426,9 +432,9 @@ class Iris(Objects):
       
         if self.checkPlayerCaughtDistance(player):
         
-            tkinter.messagebox.showinfo( "\u8001\u96e8\u5929\u88ab\u6293\u4f4f\u4e86", "\u4f60\u6293\u4f4f\u4e86\u8001\u96e8\u5929")
-            tkinter.messagebox.showinfo( "\u8001\u96e8\u5929\u88ab\u6293\u4f4f\u4e86", "\u4f60\u62a2\u8d70\u4e86\u8001\u96e8\u5929\u7684\u87ba\u72ee\u7c89")
-            tkinter.messagebox.showinfo( "\u8001\u96e8\u5929\u88ab\u6293\u4f4f\u4e86", "\u8001\u96e8\u5929\u628a\u4f60\u66b4\u6253\u4e86\u4e00\u987f")
+            messagebox.showinfo( "\u8001\u96e8\u5929\u88ab\u6293\u4f4f\u4e86", "\u4f60\u6293\u4f4f\u4e86\u8001\u96e8\u5929")
+            messagebox.showinfo( "\u8001\u96e8\u5929\u88ab\u6293\u4f4f\u4e86", "\u4f60\u62a2\u8d70\u4e86\u8001\u96e8\u5929\u7684\u87ba\u72ee\u7c89")
+            messagebox.showinfo( "\u8001\u96e8\u5929\u88ab\u6293\u4f4f\u4e86", "\u8001\u96e8\u5929\u628a\u4f60\u66b4\u6253\u4e86\u4e00\u987f")
             #
             #End game
             #
@@ -641,14 +647,14 @@ def pausePanel():
         box2.destroy()
 
     #=======================================================================
-    tkinter.messagebox.showinfo("\u6349\u4f4f\u8001\u96e8\u5929", "\u518d\u6765\u4e00\u5c40\uff1f")
+    messagebox.showinfo("\u6349\u4f4f\u8001\u96e8\u5929", "\u518d\u6765\u4e00\u5c40\uff1f")
     #======================================================================
     global box2
    
-    box2 = tkinter.Tk()
-    b1 = tkinter.Button(box2, text = "\u6765", command = newGame)
-    b2 = tkinter.Button(box2, text = "选择其他角色", command = newPlayer)
-    b3 = tkinter.Button(box2, text = "\u4e0d\u4e86", command = fin)
+    box2 = Tk()
+    b1 = Button(box2, text = "\u6765", command = newGame)
+    b2 = Button(box2, text = "选择其他角色", command = newPlayer)
+    b3 = Button(box2, text = "\u4e0d\u4e86", command = fin)
     
     b1.pack()        
     b2.pack()
@@ -700,7 +706,7 @@ def setDirectionKeys():
         leftKey = "a"
         rightKey = "d"
 
-        tkinter.messagebox.showinfo( "\u9009\u62e9\u64cd\u4f5c\u952e\u76d8", '\u4f60\u9009\u4e86\u0077\u0073\u0061\u0064')
+        messagebox.showinfo( "\u9009\u62e9\u64cd\u4f5c\u952e\u76d8", '\u4f60\u9009\u4e86\u0077\u0073\u0061\u0064')
 
     def udlr():
     
@@ -714,7 +720,7 @@ def setDirectionKeys():
         leftKey = "Left"
         rightKey = "Right"
 
-        tkinter.messagebox.showinfo( "\u9009\u62e9\u64cd\u4f5c\u952e\u76d8", '\u4f60\u9009\u4e86\u4e0a\u4e0b\u5de6\u53f3')
+        messagebox.showinfo( "\u9009\u62e9\u64cd\u4f5c\u952e\u76d8", '\u4f60\u9009\u4e86\u4e0a\u4e0b\u5de6\u53f3')
 
     # Change the game state when click on again or end,
     def gameState():
@@ -726,16 +732,16 @@ def setDirectionKeys():
     #====================================================================
     #                           Logics
     #====================================================================
-    tkinter.messagebox.showinfo( "\u9009\u62e9\u64cd\u4f5c\u952e\u76d8", '\u4f60\u597d\uff0c\u56e0\u4e3a\u6211\u7535\u8111\u6ca1\u6709\u4e0b\u952e\uff0c\u6240\u4ee5\u7279\u6b64\u7167\u987e\u5176\u4ed6\u6ca1\u6709\u4e0b\u952e\u7684\u670b\u53cb\u4eec')
+    messagebox.showinfo( "\u9009\u62e9\u64cd\u4f5c\u952e\u76d8", '\u4f60\u597d\uff0c\u56e0\u4e3a\u6211\u7535\u8111\u6ca1\u6709\u4e0b\u952e\uff0c\u6240\u4ee5\u7279\u6b64\u7167\u987e\u5176\u4ed6\u6ca1\u6709\u4e0b\u952e\u7684\u670b\u53cb\u4eec')
     
     global top
-    top = tkinter.Tk()
+    top = Tk()
    
-    b1 = tkinter.Button(top, text = "WSAD", command = wsad)
+    b1 = Button(top, text = "WSAD", command = wsad)
     b1.pack()
-    b2 = tkinter.Button(top, text = "上下左右", command= udlr)
+    b2 = Button(top, text = "上下左右", command= udlr)
     b2.pack()
-    b3 = tkinter.Button(top, text="选好了", command = gameState)
+    b3 = Button(top, text="选好了", command = gameState)
     b3.pack()
 
 def drawObject(px, py, imageID):
@@ -800,62 +806,88 @@ def selectPlayer():
             character = "老宁"    
             characterID = "p1"
             characterImage = "img/p1.gif"
-            tkinter.messagebox.showinfo("老宁","飞一般的感觉")
+            messagebox.showinfo("老宁","飞一般的感觉")
 
-        elif -400<=xp<-300 and -60<=yp<=60:
+        if -400<=xp<-300 and -60<=yp<=60:
 
             character = "小鹅"
             characterID = "p2"
             characterImage = "img/p2.gif"    
-            tkinter.messagebox.showinfo("小鹅","使用食物诱惑")
+            messagebox.showinfo("小鹅","使用食物诱惑")
 
-        elif -250<=xp<=-150 and -60<=yp<=60:
+        if -250<=xp<=-150 and -60<=yp<=60:
             character = "毛毛"
             characterID = "p3"
             characterImage = "img/p3.gif"
-            tkinter.messagebox.showinfo("毛毛","会让老雨天忍不住揍一顿")
+            messagebox.showinfo("毛毛","会让老雨天忍不住揍一顿")
 
-        elif -100<=xp<=0 and -60<=yp<=60:
+        if -100<=xp<=0 and -60<=yp<=60:
             character = "p4"
             characterID = "p4"
             characterImage = "img/p4.gif"
-            tkinter.messagebox.showinfo("p4","百分之五十几率让自己或对方陷入沉睡")        
+            messagebox.showinfo("p4","百分之五十几率让自己或对方陷入沉睡")        
         
-        elif 50<=xp<=150 and -60<=yp<=60:
-            character = "茉莉"
-            characterID = "p5"
-            characterImage = "img/p5.gif"
-            tkinter.messagebox.showinfo("茉莉","笑声威慑")
+        if bought == True:
+            if 50<=xp<=150 and -60<=yp<=60:
+                character = "茉莉"
+                characterID = "p5"
+                characterImage = "img/p5.gif"
+                messagebox.showinfo("茉莉","笑声威慑")
 
-        elif 200<=xp<=300 and -60<=yp<=60:
-            character = "Elaine"
-            characterID = "p6"
-            characterImage = "img/p6.gif"
-            tkinter.messagebox.showinfo("Elaine","可爱粉红小猪猪")        
+            if 200<=xp<=300 and -60<=yp<=60:
+                character = "Elaine"
+                characterID = "p6"
+                characterImage = "img/p6.gif"
+                messagebox.showinfo("Elaine","可爱粉红小猪猪")        
 
-        elif 350<=xp<=450 and -60<=yp<=60:
-            character = "老雷"
-            characterID = "p7"
-            characterImage = "img/p7.gif"
-            tkinter.messagebox.showinfo("老雷","瞬身战士")
+            if 350<=xp<=450 and -60<=yp<=60:
+                character = "老雷"
+                characterID = "p7"
+                characterImage = "img/p7.gif"
+                messagebox.showinfo("老雷","瞬身战士")
 
-        elif 500<=xp<=600 and -60<=yp<=60:
-            character = "阿比"
-            characterID = "p8"
-            characterImage = "img/p8.gif"
-            tkinter.messagebox.showinfo("阿比","冷静观察者")
+            if 500<=xp<=600 and -60<=yp<=60:
+                character = "阿比"
+                characterID = "p8"
+                characterImage = "img/p8.gif"
+                messagebox.showinfo("阿比","冷静观察者")
+        else:
+            if (50<=xp<=150 and -60<=yp<=60) or (200<=xp<=300 and -60<=yp<=60) or (350<=xp<=450 and -60<=yp<=60) or (500<=xp<=600 and -60<=yp<=60):
+                messagebox.showinfo("未购买","购买以获得更多角色")
+                
+                def check():
+                    global bought
+                    if e.get()==password:
+                        bought = True 
+                        messagebox.showinfo("输入激活码","激活成功")
+                        e.destroy()
+                        root.destroy()
+                    else:
+                        messagebox.showinfo("输入激活码","激活码错误")
 
-        elif -80<=xp<=80 and -260<=yp<=-100 and character:
-            tkinter.messagebox.showinfo("选中角色","你已选中"+character)
+                # Entry window for tkinter
+                root = Tk()
+                root.title('输入激活码: ')
+                global e
+                e = Entry(root)
+                e.pack()
+                e.focus_set()
+                b = Button(root,text='确认',command=check)
+                b.pack(side='bottom')
+                c = Button(root,text='放弃',command=root.destroy)
+                c.pack(side = "bottom")
+
+        if -80<=xp<=80 and -260<=yp<=-100 and character:
+            messagebox.showinfo("选中角色","你已选中"+character)
             selected = True
             resetScreen()
             initialize(characterID,characterImage)
-            tkinter.messagebox.showinfo("选择角色","点击屏幕开始游戏。")
+            messagebox.showinfo("选择角色","点击屏幕开始游戏。")
             if win.getMouse():
                 gameState = 1
 
         elif -80<=xp<=80 and -260<=yp<=-100 and not character:
-            tkinter.messagebox.showinfo("选择角色","快点选一个")
+            messagebox.showinfo("选择角色","快点选一个")
 
         # set player position
         xp,yp = -600,-600
