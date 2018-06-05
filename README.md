@@ -1,5 +1,5 @@
 # Catch Koutenn
-ラブリーロウーテンちゃんへ\
+ラブリーロウーテンちゃんへ🐧\
 A game for my CutterZ citizens.\
 写给cz居民的皮戏。
 
@@ -30,4 +30,4 @@ There are 8 of us you can select to catch Koutenn.
 1. Ewon might get stuck by obstacles set by herself.
 2. Ray can't move to a place with obstacles.
 3. Abby might get stuck by obstacles after moving but she can wait and move again by using her technique to get out of the obstacle.
-4. Images provided are replaced with some of my artworks.
+4. Images provided are replaced by some of my artworks. You can replace them with your own imgs. 
