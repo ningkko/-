@@ -6,9 +6,9 @@ import random
 
 def main():
     # Create the scene
-    # fram for monitoring the time
+    # fram2 for monitoring the time
     global frame 
-    frame= 0
+    frame = 0
     global gameState
     gamestate = 0
     global pause
@@ -18,9 +18,9 @@ def main():
     global password 
     password = "nene"
 
-    creatwin()    
-    setDirectionKeys()
+    creatwin()  
     objectGenerator()
+    setDirectionKeys()
 
     if gameState!=0:
 
@@ -116,7 +116,8 @@ class Player(Objects):
             # ================================================================
             # regardless of frames, when using p2, player can set obstacles.
             # ================================================================
-            if k == "j":
+            global bomb
+            if frame>60:
                 # after dropping the obstacle p2 will move out of the obstacle range
                 # first check if the default move will move p2 into an obstacle area.
                 safeL = True
@@ -142,28 +143,38 @@ class Player(Objects):
                         safeU = False
 
                 # set obstacle according to safty status
-                if safeL:
-                    obstaclePositions.append([self.positionX,self.positionY])
-                    drawObject(self.positionX,self.positionY,"img/lsf.gif")
-                    self.positionX-=80 
+                if bomb<3:
+                    if k=="j": 
+                        if safeL:
+                            obstaclePositions.append([self.positionX,self.positionY])
+                            drawObject(self.positionX,self.positionY,"img/lsf.gif")
+                            self.positionX-=80 
+                            bomb+=1
 
-                elif safeR:
-                    obstaclePositions.append([self.positionX,self.positionY])
-                    drawObject(self.positionX,self.positionY,"img/lsf.gif")
-                    self.positionX+=80 
+                        elif safeR:
+                            obstaclePositions.append([self.positionX,self.positionY])
+                            drawObject(self.positionX,self.positionY,"img/lsf.gif")
+                            self.positionX+=80 
+                            bomb+=1
 
-                elif safeU:
-                    obstaclePositions.append([self.positionX,self.positionY])
-                    drawObject(self.positionX,self.positionY,"img/lsf.gif")
-                    self.positionY+=80 
+                        elif safeU:
+                            obstaclePositions.append([self.positionX,self.positionY])
+                            drawObject(self.positionX,self.positionY,"img/lsf.gif")
+                            self.positionY+=80 
+                            bomb+=1
 
-                elif safeD:
-                    obstaclePositions.append([self.positionX,self.positionY])
-                    drawObject(self.positionX,self.positionY,"img/lsf.gif")
-                    self.positionY-=80 
+                        elif safeD:
+                            obstaclePositions.append([self.positionX,self.positionY])
+                            drawObject(self.positionX,self.positionY,"img/lsf.gif")
+                            self.positionY-=80 
+                            frame = 0
+                            bomb+=1
 
                 else:
-                    pass
+                    
+                    frame=0
+                    bomb=0
+
 
                 crash = False
                 for positions in obstaclePositions:
@@ -920,7 +931,8 @@ def initialize(characterID,characterImage):
             drawObject(x1,y1,"img/obstacle.gif")
 
 def objectGenerator():
-
+    global bomb
+    bomb = 0
     # generate random player and iris positions
     x1,y1 = random.randint(-500,0),random.randint(-500,0)
     x2,y2 = random.randint(0,500),random.randint(0,500)
