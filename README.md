@@ -5,7 +5,7 @@ A game for my CutterZ citizens./写给cz居民的皮戏。
 ## To play the game／使用方法
 1.Download and run in command line (Python3.6.5 required). I know this sucks but I just can't get pyinstaller to work.／下载并在命令栏打开，需要python3.6.5。\
 2.Follow the instructions.／根据提示操作。\
-3.Press j for character specialized techiques(note that elaine and ray also use key k)./
+3.Press j for character specialized fighting techniques(note that elaine and ray also use key k)./
 按j触发角色限定闘技（elaine和雷也用k键）。\
 4.Press the period key to quit the program at any time./按何时候都可以按。键退出
 
