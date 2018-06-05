@@ -1,4 +1,4 @@
-1 . Frame monitored process
+1. Frame monitored process
 2. GameState monitored game states
 3. character selection
 4. player setting obstacles
