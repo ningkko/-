@@ -10,12 +10,11 @@ A game for my CutterZ citizens.\
 3.Press j for character specialized fighting techniques(note that elaine and ray also use key k).\
 按j触发角色限定闘技（elaine和雷也用k键）。\
 4.Press the period key to quit the program at any time./按何时候都可以按。键退出
-
-## Activate Code／激活码
+### Activate Code／激活码
 nene
 
 ## Other explanations／游戏说明
-### 太多字了不想翻译了自己看吧
+#### 太多字了不想翻译了自己看吧
 Koutenn is running! Catch her!\
 There are 8 of us you can select to catch Koutenn.
 1. When you're using Ning, you can move faster after pressing j. After using the technique the player has to wait for 300 frames for the next use.
@@ -31,3 +30,4 @@ There are 8 of us you can select to catch Koutenn.
 1. Ewon might get stuck by obstacles set by herself.
 2. Ray can't move to a place with obstacles.
 3. Abby might get stuck by obstacles after moving but she can wait and move again by using her technique to get out of the obstacle.
+4. Images provided are replaced with some of my artworks.
