@@ -32,5 +32,9 @@ There are 8 of us you can select to catch Koutenn.
 3. Abby might get stuck by obstacles after moving but she can wait and move again by using her technique to get out of the obstacle.
 4. Images provided are replaced by some of my artworks. You can replace them with your own imgs. 
 
-## Demodemo1.png
+## Demo
 ![image](https://github.com/ningkko/Koutenn/blob/master/demo/demo1.png)
+![image](https://github.com/ningkko/Koutenn/blob/master/demo/demo2.png)
+![image](https://github.com/ningkko/Koutenn/blob/master/demo/demo3.png)
+![image](https://github.com/ningkko/Koutenn/blob/master/demo/demo4.png)
+![image](https://github.com/ningkko/Koutenn/blob/master/demo/demo5.png)
