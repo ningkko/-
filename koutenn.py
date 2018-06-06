@@ -30,7 +30,7 @@ def main():
             k = win.checkKey()
 
             if k == 'period':
-                break
+                gameState=2
 
             elif gameState == 1:
                 pause = False
@@ -87,6 +87,26 @@ class Objects:
             return True
         else: return False    
 
+    # def generateValidPositions(self):
+   
+    #     x1,y1 = random.randint(-500,0),random.randint(-500,0)
+    #     x2,y2 = random.randint(0,500),random.randint(0,500)                        
+    #     newPositions=[x1,y1,x2,y2]
+    #     safe1 = True
+    #     safe2 = True
+        
+    #     for positions in obstaclePositions:
+    #         if not checkNotCrash(positions,x1,y1):
+    #             safe1 = False
+    #     for positions in obstaclePositions:
+    #         if not checkNotCrash(positions,x2,y2):
+    #             safe2 = False
+    #     if safe1 and safe2:
+    #         return [x1,y1,x2,y2]
+    #     else:
+    #         newPositions = self.generateValidPositions()
+            
+
 class Player(Objects):
     '''Player class
     '''
@@ -127,19 +147,19 @@ class Player(Objects):
 
                 for positions in obstaclePositions:
                     # moving left
-                    if not checkNotCrash(positions,self.positionX-80,self.positionY) or (self.positionX-80<=-580):
+                    if checkNotCrash(positions,self.positionX-70,self.positionY)==False or (self.positionX-80<=-580):
                         safeL = False
 
                     # moving right
-                    if not checkNotCrash(positions,self.positionX+80,self.positionY) or (self.positionX+80>=580):
+                    if checkNotCrash(positions,self.positionX+70,self.positionY)==False or (self.positionX+80>=580):
                         safeR = False
 
                     # moving down
-                    if not checkNotCrash(positions,self.positionX, self.positionY-80) or (self.positionY-80<=-580):
+                    if checkNotCrash(positions,self.positionX, self.positionY-70)==False or (self.positionY-80<=-580):
                         safeD = False
 
                     # moving up
-                    if not checkNotCrash(positions,self.positionX, self.positionY+80) or (self.positionX-80>=580):
+                    if checkNotCrash(positions,self.positionX, self.positionY+70)==False or (self.positionX-80>=580):
                         safeU = False
 
                 # set obstacle according to safty status
@@ -148,25 +168,25 @@ class Player(Objects):
                         if safeL:
                             obstaclePositions.append([self.positionX,self.positionY])
                             drawObject(self.positionX,self.positionY,"img/lsf.gif")
-                            self.positionX-=80 
+                            self.positionX-=70 
                             bomb+=1
 
                         elif safeR:
                             obstaclePositions.append([self.positionX,self.positionY])
                             drawObject(self.positionX,self.positionY,"img/lsf.gif")
-                            self.positionX+=80 
+                            self.positionX+=70 
                             bomb+=1
 
                         elif safeU:
                             obstaclePositions.append([self.positionX,self.positionY])
                             drawObject(self.positionX,self.positionY,"img/lsf.gif")
-                            self.positionY+=80 
+                            self.positionY+=70 
                             bomb+=1
 
                         elif safeD:
                             obstaclePositions.append([self.positionX,self.positionY])
                             drawObject(self.positionX,self.positionY,"img/lsf.gif")
-                            self.positionY-=80 
+                            self.positionY-=70 
                             frame = 0
                             bomb+=1
 
@@ -175,13 +195,58 @@ class Player(Objects):
                     frame=0
                     bomb=0
 
-
                 crash = False
                 for positions in obstaclePositions:
                     if not checkNotCrash(positions,self.positionX,self.positionY):
                         messagebox.showinfo("你挂了","你在尝试困住小雨天的时候把自己困住了")
                         messagebox.showinfo("你挂了","点击任意位置退出")
+                        # move iris and player to new positions
+                        # generate random player and iris positions
+                        # check if new positions crash with obstacles
+                        state = False
+                        
+                        while (state==False):
+
+                            x1,y1 = random.randint(-500,0),random.randint(-500,0)
+                            x2,y2 = random.randint(0,500),random.randint(0,500)  
+
+                            # assign random relative positions 
+                            xChance = random.randint(0,1)
+                            if xChance == 0:
+                                px=x1
+                                ix=x2
+                            else:
+                                px=x2
+                                ix=x1
+                            yChance = random.randint(0,1)
+                            if yChance == 0:
+                                py=y1
+                                iy=y2
+                            else:
+                                py=y2
+                                iy=y1  
+                            
+                            safeP = True
+                            safeI = True
+                            for positions in obstaclePositions:
+                                if not checkNotCrash(positions,px,py):
+                                    safeP = False
+                            for positions in obstaclePositions:
+                                if not checkNotCrash(positions,ix,iy):
+                                    safeI = False
+                            if (safeP==True) and (safeI==True):
+                                state = True
+
+
+                        # add to obstacle positions for avoiding creating obstacles on players 
+                        global characterPositions
+                        characterPositions = []
+                        characterPositions.append([px,py])
+                        characterPositions.append([ix,iy])
+                        iris.positionX, iris.positionY = ix,iy
+                        player.positionX, player.positionY = px,py
                         if win.getMouse():
+
                             pausePanel()
 
         elif self.name == "p3":
@@ -305,16 +370,25 @@ class Player(Objects):
 
         def wrap():
             # wrap when touches borders
-            if self.positionX<=-580:
+            safeX=True
+            safeY=True
+            for positions in obstaclePositions:
+                if not checkNotCrash(positions,-self.positionX,self.positionY):
+                    safeX=False
+            for positions in obstaclePositions:
+                if not checkNotCrash(positions,self.positionX,-self.positionY):
+                    safeY=False
+
+            if self.positionX<=-580 and safeX:
                 self.positionX =539
            
-            elif self.positionX>= 580:
+            elif self.positionX>= 580 and safeX:
                 self.positionX = -539
           
-            elif self.positionY >= 580:
+            elif self.positionY >= 580 and safeY:
                 self.positionY = -539
           
-            elif self.positionY <=-580:
+            elif self.positionY <=-580 and safeY:
                 self.positionY = 539
         
         def moveLeft():
@@ -400,29 +474,39 @@ class Iris(Objects):
         self.image.undraw()
         self.checkCaught()
 
+        #check wrap conditions
+        safeX=True
+        safeY=True
+        for positions in obstaclePositions:
+            if not checkNotCrash(positions,-self.positionX,self.positionY):
+                safeX=False
+        for positions in obstaclePositions:
+            if not checkNotCrash(positions,self.positionX,-self.positionY):
+                safeY=False
 
+        # move logic and wrap logics
         if (self.direction == "left" ) and (self.positionX > -580):
             self.positionX -= self.irirsStep
 
-        elif self.positionX<=-580:
+        elif self.positionX<=-580 and safeX:
             self.positionX = 539
 
         elif (self.direction == "right") and (self.positionX < 580):
             self.positionX += self.irirsStep
 
-        elif self.positionX>= 580:
+        elif self.positionX>= 580 and safeX:
             self.positionX = -539
 
         elif (self.direction == "up") and (self.positionY < 580):
             self.positionY += self.irirsStep
 
-        elif self.positionY >= 580:
+        elif self.positionY >= 580 and safeY:
             self.positionY = -539
 
         elif (self.direction == "down") and (self.positionY > -580):
             self.positionY -= self.irirsStep
 
-        elif self.positionY <=-580:
+        elif self.positionY <=-580 and safeY:
             self.positionY = 539
 
         elif self.direction == "none":
@@ -452,22 +536,39 @@ class Iris(Objects):
 
             # move iris and player to new positions
             # generate random player and iris positions
-            x1,y1 = random.randint(-500,0),random.randint(-500,0)
-            x2,y2 = random.randint(0,500),random.randint(0,500)
-            xChance = random.randint(0,1)
-            if xChance == 0:
-                px=x1
-                ix=x2
-            else:
-                px=x2
-                ix=x1
-            yChance = random.randint(0,1)
-            if yChance == 0:
-                py=y1
-                iy=y2
-            else:
-                py=y2
-                iy=y1       
+            state = False
+                        
+            while (state==False):
+
+                x1,y1 = random.randint(-500,0),random.randint(-500,0)
+                x2,y2 = random.randint(0,500),random.randint(0,500)  
+
+                # assign random relative positions 
+                xChance = random.randint(0,1)
+                if xChance == 0:
+                    px=x1
+                    ix=x2
+                else:
+                    px=x2
+                    ix=x1
+                yChance = random.randint(0,1)
+                if yChance == 0:
+                    py=y1
+                    iy=y2
+                else:
+                    py=y2
+                    iy=y1  
+                
+                safeP = True
+                safeI = True
+                for positions in obstaclePositions:
+                    if not checkNotCrash(positions,px,py):
+                        safeP = False
+                for positions in obstaclePositions:
+                    if not checkNotCrash(positions,ix,iy):
+                        safeI = False
+                if (safeP==True) and (safeI==True):
+                    state = True      
 
             # add to obstacle positions for avoiding creating obstacles on players 
             global characterPositions
@@ -683,7 +784,7 @@ def resetScreen():
 def checkNotCrash(position,selfPositionX,selfPositionY):
 
     #  if crash into obstacles, return false.
-    if (-80 < (position[0] - selfPositionX ) < 80) and (-80 < (position[1]- selfPositionY ) < 80):
+    if (-70 < (position[0] - selfPositionX ) < 70) and (-70 < (position[1]- selfPositionY ) < 70):
         return False
     
     else: return True
@@ -914,8 +1015,8 @@ def initialize(characterID,characterImage):
     player.image.draw(win)
     
     iris.image.draw(win)
-    for i in range(0,15):
-        x1,y1 = random.randint(-500,500),random.randint(-500,500)
+    for i in range(0,20):
+        x1,y1 = random.randint(-470,470),random.randint(-470,470)
 
         safe = True
 
