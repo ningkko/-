@@ -33,4 +33,4 @@ There are 8 of us you can select to catch Koutenn.
 4. Images provided are replaced by some of my artworks. You can replace them with your own imgs. 
 
 ## Demo
-![Image text](https://raw.github.com/ningkko/repositpry/master/koutenn/demo.jpeg)
+![Image text](Koutenn/demo/demo1.png)
